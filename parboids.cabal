@@ -1,0 +1,74 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.35.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           parboids
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/ew2664/parboids#readme>
+homepage:       https://github.com/ew2664/parboids#readme
+bug-reports:    https://github.com/ew2664/parboids/issues
+author:         Ethan Wu
+maintainer:     ew2664@columbia.edu
+copyright:      2022 Ethan Wu
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/ew2664/parboids
+
+library
+  exposed-modules:
+      Boid
+      BoidIO
+      Config
+      Sim
+      Utils
+  other-modules:
+      Paths_parboids
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base >=4.7 && <5
+    , deepseq
+    , linear
+    , parallel
+  default-language: Haskell2010
+
+executable parboids-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_parboids
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N -eventlog
+  build-depends:
+      base >=4.7 && <5
+    , deepseq
+    , linear
+    , parallel
+    , parboids
+  default-language: Haskell2010
+
+test-suite parboids-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_parboids
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , deepseq
+    , linear
+    , parallel
+    , parboids
+  default-language: Haskell2010

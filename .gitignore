@@ -1,0 +1,5 @@
+.stack-work/
+*~
+*.eventlog
+output/*.txt
+*.gif
