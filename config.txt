@@ -1,1 +1,5 @@
-cn 0
+radius 3
+sn 1.8
+an 0.08
+cn 0.4
+maxVel 2

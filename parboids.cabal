@@ -42,6 +42,7 @@ library
     , gloss
     , lens
     , linear
+    , optparse-applicative
     , parallel
   default-language: Haskell2010
 
@@ -58,6 +59,7 @@ executable parboids-exe
     , gloss
     , lens
     , linear
+    , optparse-applicative
     , parallel
     , parboids
   default-language: Haskell2010
@@ -76,6 +78,7 @@ test-suite parboids-test
     , gloss
     , lens
     , linear
+    , optparse-applicative
     , parallel
     , parboids
   default-language: Haskell2010

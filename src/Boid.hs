@@ -11,9 +11,9 @@ import Utils (vBound)
 --------------------------------------------------------------------------------
 
 data Boid = Boid
-  { bPos :: V2 Float,
-    bVel :: V2 Float,
-    bMass :: Float
+  { bPos :: !(V2 Float),
+    bVel :: !(V2 Float),
+    bMass :: !Float
   }
 
 instance Show Boid where
