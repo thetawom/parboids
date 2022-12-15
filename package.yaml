@@ -22,8 +22,10 @@ description: Please see the README on GitHub at <https://github.com/ew2664/parbo
 dependencies:
   - base >= 4.7 && < 5
   - linear
+  - lens
   - deepseq
   - parallel
+  - gloss
 
 ghc-options:
   - -Wall

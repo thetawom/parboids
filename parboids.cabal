@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      Animate
       Boid
       BoidIO
       Config
@@ -38,6 +39,8 @@ library
   build-depends:
       base >=4.7 && <5
     , deepseq
+    , gloss
+    , lens
     , linear
     , parallel
   default-language: Haskell2010
@@ -52,6 +55,8 @@ executable parboids-exe
   build-depends:
       base >=4.7 && <5
     , deepseq
+    , gloss
+    , lens
     , linear
     , parallel
     , parboids
@@ -68,6 +73,8 @@ test-suite parboids-test
   build-depends:
       base >=4.7 && <5
     , deepseq
+    , gloss
+    , lens
     , linear
     , parallel
     , parboids

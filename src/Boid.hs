@@ -1,4 +1,4 @@
-module Boid (Boid, newBoid, updateBoid) where
+module Boid (Boid, newBoid, updateBoid, bPos, bVel) where
 
 import Config (an, cn, maxVel, radius, sn)
 import Control.DeepSeq (NFData (..))
@@ -6,7 +6,7 @@ import Data.List (sortOn)
 import Linear.Metric (Metric (distance))
 import Linear.V2 (V2 (..))
 import Linear.Vector (zero, (*^), (^+^), (^-^), (^/))
-import Utils (bound)
+import Utils (vBound)
 
 --------------------------------------------------------------------------------
 
@@ -63,8 +63,8 @@ steerFrom b (Steer sf af cf) bod = Steer sf' af' cf'
 updateBoid :: [Boid] -> Boid -> Boid
 updateBoid flock b@(Boid pos vel m) = Boid {bPos = pos', bVel = vel', bMass = m}
   where
-    pos' = pos ^+^ 0.9 *^ vel'
-    vel' = bound maxVel (vel ^+^ 0.1 *^ netf ^/ m)
+    pos' = pos ^+^ 0.5 *^ vel'
+    vel' = vBound maxVel (vel ^+^ 0.05 *^ netf ^/ m)
     netf = sn *^ sf ^+^ an *^ af ^+^ cn *^ cf
     Steer sf af cf = foldl (steerFrom b) initSteer bs
     bs = flockmates flock radius b
