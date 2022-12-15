@@ -1,6 +1,6 @@
 module Boid (Boid, newBoid, updateBoid, bPos, bVel) where
 
-import Config (an, cn, maxVel, radius, sn)
+import Config (Config (Config))
 import Control.DeepSeq (NFData (..))
 import Data.List (sortOn)
 import Linear.Metric (Metric (distance))
@@ -60,8 +60,9 @@ steerFrom b (Steer sf af cf) bod = Steer sf' af' cf'
     cf' = cf ^+^ cohesion b bod
 
 -- update boid with all flockmates
-updateBoid :: [Boid] -> Boid -> Boid
-updateBoid flock b@(Boid pos vel m) = Boid {bPos = pos', bVel = vel', bMass = m}
+updateBoid :: Config -> [Boid] -> Boid -> Boid
+updateBoid (Config radius sn an cn maxVel) flock b@(Boid pos vel m) =
+  Boid {bPos = pos', bVel = vel', bMass = m}
   where
     pos' = pos ^+^ 0.5 *^ vel'
     vel' = vBound maxVel (vel ^+^ 0.05 *^ netf ^/ m)
