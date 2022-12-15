@@ -7,10 +7,10 @@ sn :: Float
 sn = 1.8
 
 an :: Float
-an = 0.1
+an = 0.08
 
 cn :: Float
-cn = 0.5
+cn = 0.4
 
 maxVel :: Float
 maxVel = 2

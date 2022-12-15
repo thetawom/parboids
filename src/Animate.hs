@@ -40,8 +40,9 @@ draw boid =
       translate x' y' $ color blue $ circleSolid 1
     ]
   where
-    (x', y') = vToTup $ 15 *^ bPos boid ^+^ vScaleTo 2 (bVel boid)
-    (x, y) = vToTup $ 15 *^ bPos boid
+    (x', y') = vToTup $ scaleFac *^ bPos boid ^+^ vScaleTo 2 (bVel boid)
+    (x, y) = vToTup $ scaleFac *^ bPos boid
+    scaleFac = 15
 
 runAnimation :: [[Boid]] -> IO ()
 runAnimation flocks = simulate window background 40 flocks render update
