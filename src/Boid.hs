@@ -61,11 +61,10 @@ steerFrom b (Steer sf af cf) bod = Steer sf' af' cf'
 
 -- update boid with all flockmates
 updateBoid :: Config -> [Boid] -> Boid -> Boid
-updateBoid (Config radius sn an cn maxVel) flock b@(Boid pos vel m) =
-  Boid {bPos = pos', bVel = vel', bMass = m}
+updateBoid (Config radius sn an cn maxVel) flock b = b {bPos = pos', bVel = vel'}
   where
-    pos' = pos ^+^ 0.5 *^ vel'
-    vel' = vBound maxVel (vel ^+^ 0.05 *^ netf ^/ m)
+    pos' = bPos b ^+^ 0.5 *^ vel'
+    vel' = vBound maxVel (bVel b ^+^ 0.05 *^ netf ^/ bMass b)
     netf = sn *^ sf ^+^ an *^ af ^+^ cn *^ cf
     Steer sf af cf = foldl (steerFrom b) initSteer bs
     bs = flockmates flock radius b
