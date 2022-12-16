@@ -62,6 +62,7 @@ run args = do
   unless (numIter args > 0) $ die "num-iter must be a positive integer"
   flock0 <- loadFlock $ flockFile args
   config <- loadConfig $ configFile args
+  print config
   let flocks = reverse $ runSimCollect config flock0 $ numIter args
   foldM_ (saveFlock $ outputDir args) 0 flocks
   putStrLn "simulation complete"

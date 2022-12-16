@@ -1,14 +1,17 @@
-module Config (Config (..), loadConfig) where
+module Config (Config (..), loadConfig, show) where
 
 import System.IO (Handle, IOMode (ReadMode), hGetLine, hIsEOF, withFile)
+import Text.Read (readMaybe)
 
 data Config = Config
   { radius :: Float,
     sn :: Float,
     an :: Float,
     cn :: Float,
-    maxVel :: Float
+    maxVel :: Float,
+    wSize :: Maybe Float
   }
+  deriving (Show)
 
 defaultConfig :: Config
 defaultConfig =
@@ -17,7 +20,8 @@ defaultConfig =
       sn = 1.8,
       an = 0.08,
       cn = 0.4,
-      maxVel = 2
+      maxVel = 2,
+      wSize = Nothing
     }
 
 loadConfig :: Maybe String -> IO Config
@@ -33,13 +37,15 @@ readConfigFile hdl = do
       else
         ( do
             line <- hGetLine hdl
-            config <- readConfigFile hdl
-            case words line of
-              ["radius", arg] -> return config {radius = read arg}
-              ["sn", arg] -> return config {sn = read arg}
-              ["an", arg] -> return config {an = read arg}
-              ["cn", arg] -> return config {cn = read arg}
-              ["maxVel", arg] -> return config {maxVel = read arg}
-              _ -> return config
+            cfg <- readConfigFile hdl
+            let cfg' = case words line of
+                  ["radius", arg] -> cfg {radius = read arg}
+                  ["sn", arg] -> cfg {sn = read arg}
+                  ["an", arg] -> cfg {an = read arg}
+                  ["cn", arg] -> cfg {cn = read arg}
+                  ["maxVel", arg] -> cfg {maxVel = read arg}
+                  ["wSize", arg] -> cfg {wSize = readMaybe arg}
+                  _ -> cfg
+            return cfg'
         )
     )

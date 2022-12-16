@@ -17,7 +17,7 @@ import Graphics.Gloss
   )
 import Graphics.Gloss.Data.ViewPort (ViewPort)
 import Linear.Vector ((*^), (^+^))
-import Utils (vScaleTo, vToTup)
+import Utils (vScaleTo, vxy)
 
 background :: Color
 background = white
@@ -36,13 +36,13 @@ render (flock : _) = pictures $ map draw flock
 draw :: Boid -> Picture
 draw boid =
   pictures
-    [ translate x y $ color red $ circleSolid 2,
-      translate x' y' $ color blue $ circleSolid 1
+    [ translate x y $ color red $ circleSolid 3,
+      translate x' y' $ color blue $ circleSolid 2
     ]
   where
-    (x', y') = vToTup $ scaleFac *^ bPos boid ^+^ vScaleTo 2 (bVel boid)
-    (x, y) = vToTup $ scaleFac *^ bPos boid
-    scaleFac = 15
+    (x', y') = vxy $ scaleFac *^ bPos boid ^+^ vScaleTo 2 (bVel boid)
+    (x, y) = vxy $ scaleFac *^ bPos boid
+    scaleFac = 20
 
 runAnimation :: [[Boid]] -> IO ()
-runAnimation flocks = simulate window background 40 flocks render update
+runAnimation flocks = simulate window background 60 flocks render update

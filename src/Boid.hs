@@ -1,19 +1,20 @@
 module Boid (Boid, newBoid, updateBoid, bPos, bVel) where
 
-import Config (Config (Config))
+import Config (Config (..))
 import Control.DeepSeq (NFData (..))
 import Data.List (sortOn)
-import Linear.Metric (Metric (distance))
+import Linear (negated)
+import Linear.Metric (Metric (norm))
 import Linear.V2 (V2 (..))
 import Linear.Vector (zero, (*^), (^+^), (^-^), (^/))
-import Utils (vBound)
+import Utils (vBound, vWrap, wrapDisp)
 
 --------------------------------------------------------------------------------
 
 data Boid = Boid
-  { bPos :: !(V2 Float),
-    bVel :: !(V2 Float),
-    bMass :: !Float
+  { bPos :: V2 Float,
+    bVel :: V2 Float,
+    bMass :: Float
   }
 
 instance Show Boid where
@@ -29,14 +30,21 @@ newBoid [px, py, vx, vy, m] = Just $ Boid (V2 px py) (V2 vx vy) m
 newBoid [px, py, vx, vy] = Just $ Boid (V2 px py) (V2 vx vy) 1
 newBoid _ = Nothing
 
-dist :: Boid -> Boid -> Float
-dist b bo = distance (bPos b) (bPos bo)
+between :: Config -> Boid -> Boid -> V2 Float
+between cfg b bo = case wSize cfg of
+  Just size -> wrapDisp size (bPos b) (bPos bo)
+  Nothing -> bPos bo ^-^ bPos b
 
-flockmates :: [Boid] -> Float -> Boid -> [(Boid, Float)]
-flockmates flock r b = filter (\(bo, _) -> bPos bo /= bPos b) neighbors
+flockmates :: Config -> [Boid] -> Float -> Boid -> [(Boid, V2 Float)]
+flockmates cfg flock r b = filter (\(bo, _) -> bPos bo /= bPos b) neighbors
   where
-    neighbors = takeWhile (\(_, d) -> d < r) sorted
-    sorted = sortOn snd $ map (\bo -> (bo, dist b bo)) flock
+    neighbors = takeWhile (\(_, disp) -> norm disp < r) sorted
+    sorted = sortOn (norm . snd) $ map (\bo -> (bo, between cfg b bo)) flock
+
+wrapPos :: Config -> V2 Float -> V2 Float
+wrapPos cfg pos = case wSize cfg of
+  Just size -> vWrap size pos
+  Nothing -> pos
 
 --------------------------------------------------------------------------------
 
@@ -52,30 +60,30 @@ initSteer :: Steer
 initSteer = Steer zero zero zero
 
 -- add steering force from another boid
-steerFrom :: Boid -> Steer -> (Boid, Float) -> Steer
-steerFrom b (Steer sf af cf) bod = Steer sf' af' cf'
+steerFrom :: Boid -> Steer -> (Boid, V2 Float) -> Steer
+steerFrom b (Steer sf af cf) disp = Steer sf' af' cf'
   where
-    sf' = sf ^+^ separation b bod
-    af' = af ^+^ alignment b bod
-    cf' = cf ^+^ cohesion b bod
+    sf' = sf ^+^ separation b disp
+    af' = af ^+^ alignment b disp
+    cf' = cf ^+^ cohesion b disp
 
 -- update boid with all flockmates
 updateBoid :: Config -> [Boid] -> Boid -> Boid
-updateBoid (Config radius sn an cn maxVel) flock b = b {bPos = pos', bVel = vel'}
+updateBoid cfg flock b = b {bPos = pos', bVel = vel'}
   where
-    pos' = bPos b ^+^ 0.5 *^ vel'
-    vel' = vBound maxVel (bVel b ^+^ 0.05 *^ netf ^/ bMass b)
-    netf = sn *^ sf ^+^ an *^ af ^+^ cn *^ cf
+    pos' = wrapPos cfg $ bPos b ^+^ 0.1 *^ vel'
+    vel' = vBound (maxVel cfg) (bVel b ^+^ 0.05 *^ netf ^/ bMass b)
+    netf = sn cfg *^ sf ^+^ an cfg *^ af ^+^ cn cfg *^ cf
     Steer sf af cf = foldl (steerFrom b) initSteer bs
-    bs = flockmates flock radius b
+    bs = flockmates cfg flock (radius cfg) b
 
 --------------------------------------------------------------------------------
 
-separation :: Boid -> (Boid, Float) -> V2 Float
-separation b (bo, d) = (bPos b ^-^ bPos bo) ^/ (d ** 2)
+separation :: Boid -> (Boid, V2 Float) -> V2 Float
+separation _ (_, disp) = negated disp ^/ (norm disp ** 2)
 
-alignment :: Boid -> (Boid, Float) -> V2 Float
+alignment :: Boid -> (Boid, V2 Float) -> V2 Float
 alignment b (bo, _) = bVel bo ^-^ bVel b
 
-cohesion :: Boid -> (Boid, Float) -> V2 Float
-cohesion b (bo, _) = bPos bo ^-^ bPos b
+cohesion :: Boid -> (Boid, V2 Float) -> V2 Float
+cohesion _ (_, disp) = disp

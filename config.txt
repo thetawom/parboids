@@ -1,5 +1,6 @@
-radius 3
+radius 5
 sn 1.8
-an 0.08
-cn 0.4
-maxVel 2
+an 0.05
+cn 0.3
+maxVel 10
+wSize 40
