@@ -19,11 +19,15 @@ import Graphics.Gloss.Data.ViewPort (ViewPort)
 import Linear.Vector ((*^), (^+^))
 import Utils (vScaleTo, vxy)
 
+--------------------------------------------------------------------------------
+
 background :: Color
 background = white
 
 window :: Display
 window = InWindow "ParBoids" (800, 600) (200, 200)
+
+--------------------------------------------------------------------------------
 
 update :: ViewPort -> Float -> [[Boid]] -> [[Boid]]
 update _ _ [] = []
@@ -43,6 +47,8 @@ draw boid =
     (x', y') = vxy $ scaleFac *^ bPos boid ^+^ vScaleTo 2 (bVel boid)
     (x, y) = vxy $ scaleFac *^ bPos boid
     scaleFac = 20
+
+--------------------------------------------------------------------------------
 
 runAnimation :: [[Boid]] -> IO ()
 runAnimation flocks = simulate window background 60 flocks render update

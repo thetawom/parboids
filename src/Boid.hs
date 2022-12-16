@@ -1,6 +1,6 @@
 module Boid (Boid, newBoid, updateBoid, bPos, bVel) where
 
-import Config (Config (..))
+import Config (Config (..), WorldSize (..))
 import Control.DeepSeq (NFData (..))
 import Data.List (sortOn)
 import Linear (negated)
@@ -32,8 +32,8 @@ newBoid _ = Nothing
 
 between :: Config -> Boid -> Boid -> V2 Float
 between cfg b bo = case wSize cfg of
-  Just size -> wrapDisp size (bPos b) (bPos bo)
-  Nothing -> bPos bo ^-^ bPos b
+  Size size -> wrapDisp size (bPos b) (bPos bo)
+  Infinite -> bPos bo ^-^ bPos b
 
 flockmates :: Config -> [Boid] -> Float -> Boid -> [(Boid, V2 Float)]
 flockmates cfg flock r b = filter (\(bo, _) -> bPos bo /= bPos b) neighbors
@@ -43,8 +43,8 @@ flockmates cfg flock r b = filter (\(bo, _) -> bPos bo /= bPos b) neighbors
 
 wrapPos :: Config -> V2 Float -> V2 Float
 wrapPos cfg pos = case wSize cfg of
-  Just size -> vWrap size pos
-  Nothing -> pos
+  Size size -> vWrap size pos
+  Infinite -> pos
 
 --------------------------------------------------------------------------------
 

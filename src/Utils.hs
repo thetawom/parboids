@@ -5,6 +5,8 @@ import Linear.Metric (Metric (norm), normalize)
 import Linear.V2 (V2 (V2))
 import Linear.Vector ((*^))
 
+--------------------------------------------------------------------------------
+
 vBound :: Float -> V2 Float -> V2 Float
 vBound lim v = vScaleTo (norm v `min` lim) v
 
@@ -16,6 +18,8 @@ vWrap size (V2 x y) = V2 (wrap x) (wrap y)
   where
     wrap a = (a + size / 2) `mod'` size - (size / 2)
 
+--------------------------------------------------------------------------------
+
 vx :: V2 a -> a
 vx (V2 x _) = x
 
@@ -24,6 +28,8 @@ vy (V2 _ y) = y
 
 vxy :: V2 a -> (a, a)
 vxy (V2 x y) = (x, y)
+
+--------------------------------------------------------------------------------
 
 wrapDisp :: Float -> V2 Float -> V2 Float -> V2 Float
 wrapDisp size p1 p2 = V2 dx' dy'

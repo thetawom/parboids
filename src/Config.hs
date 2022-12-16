@@ -1,7 +1,8 @@
-module Config (Config (..), loadConfig, show) where
+module Config (Config (..), WorldSize (..), loadConfig) where
 
 import System.IO (Handle, IOMode (ReadMode), hGetLine, hIsEOF, withFile)
-import Text.Read (readMaybe)
+
+--------------------------------------------------------------------------------
 
 data Config = Config
   { radius :: Float,
@@ -9,20 +10,32 @@ data Config = Config
     an :: Float,
     cn :: Float,
     maxVel :: Float,
-    wSize :: Maybe Float
+    wSize :: WorldSize
   }
   deriving (Show)
+
+--------------------------------------------------------------------------------
+
+data WorldSize = Infinite | Size Float
+
+instance Show WorldSize where
+  show Infinite = "∞"
+  show (Size f) = show f
+
+--------------------------------------------------------------------------------
 
 defaultConfig :: Config
 defaultConfig =
   Config
-    { radius = 3,
+    { radius = 5,
       sn = 1.8,
       an = 0.08,
-      cn = 0.4,
-      maxVel = 2,
-      wSize = Nothing
+      cn = 0.3,
+      maxVel = 10,
+      wSize = Infinite
     }
+
+--------------------------------------------------------------------------------
 
 loadConfig :: Maybe String -> IO Config
 loadConfig file = case file of
@@ -44,7 +57,7 @@ readConfigFile hdl = do
                   ["an", arg] -> cfg {an = read arg}
                   ["cn", arg] -> cfg {cn = read arg}
                   ["maxVel", arg] -> cfg {maxVel = read arg}
-                  ["wSize", arg] -> cfg {wSize = readMaybe arg}
+                  ["wSize", arg] -> cfg {wSize = Size $ read arg}
                   _ -> cfg
             return cfg'
         )
