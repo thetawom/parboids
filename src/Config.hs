@@ -29,10 +29,10 @@ defaultConfig =
   Config
     { radius = 5,
       sn = 1.8,
-      an = 0.08,
+      an = 0.05,
       cn = 0.3,
       maxVel = 10,
-      wSize = Infinite
+      wSize = Size 40
     }
 
 --------------------------------------------------------------------------------
