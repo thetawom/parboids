@@ -27,7 +27,7 @@ runSimCollect cfg flock0 nIter = foldl simLoop [flock0] [1 .. nIter]
   where
     simLoop :: [[Boid]] -> Int -> [[Boid]]
     simLoop [] _ = []
-    simLoop flocks@(flock : _) _ = updateWith Seq cfg flock : flocks
+    simLoop flocks@(flock : _) _ = updateWith (Chunks 5) cfg flock : flocks
 
 --------------------------------------------------------------------------------
 
@@ -47,7 +47,8 @@ updateTwoPart cfg flock = runEval $ do
 updateChunks :: Int -> Config -> [Boid] -> [Boid]
 updateChunks numChunks cfg flock = flock'
   where
-    flock' = map (updateBoid cfg flock) flock `using` parListChunk numChunks rdeepseq
+    flock' = map (updateBoid cfg flock) flock `using` parListChunk chunkSize rdeepseq
+    chunkSize = length flock' `div` numChunks
 
 updateParList :: Config -> [Boid] -> [Boid]
 updateParList cfg flock = flock'
